@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz do Amor</title>
+    <link rel="shortcut icon" type="image/png" href="./img/heart.svg" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffebee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #e91e63;
+            margin-bottom: 30px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background-color: #f8bbd0;
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            background-color: #e91e63;
+            color: white;
+        }
+
+        .progress {
+            margin-top: 20px;
+            font-style: italic;
+            color: #e91e63;
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            font-size: 20px;
+            color: #e91e63;
+            font-weight: bold;
+        }
+
+        .heart {
+            font-size: 50px;
+            margin-top: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-container">
+        <h1>Será que ama mesmo?❤️</h1>
+        <div id="quiz">
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Fácil, qual foi nosso primeiro encontro?",
+                options: [
+                    "No cinema assistindo um filme",
+                    "No Subway",
+                    "No café de Harry Potter"
+                ],
+                correct: 2
+            },
+            {
+                question: "Quem é meu piloto favorito?",
+                options: [
+                    "Vettel",
+                    "Senna",
+                    "Hamilton"
+                ],
+                correct: 1
+            },
+            {
+                question: "Qual foi a primeira forma carinhosa que você me chamou ou falou?",
+                options: [
+                    "Meu bem",
+                    "Meu garoto",
+                    "Que orgulho"
+                ],
+                correct: 0
+            },
+            {
+                question: "Qual é a minha música favorita atualmente?",
+                options: [
+                    "Mun Rá",
+                    "Caso Indefinido",
+                    "Aliança"
+                ],
+                correct: 1
+            },
+            {
+                question: "Que peça de roupa não podia ser grande para a gente ficar juntos segundo o Dozinete?",
+                options: [
+                    "Brinco",
+                    "Boné",
+                    "Calça"
+                ],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        const quizElement = document.getElementById('quiz');
+        const resultElement = document.getElementById('result');
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const progressElement = document.getElementById('progress');
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            questionElement.textContent = question.question;
+
+            optionsElement.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.textContent = option;
+                button.onclick = () => checkAnswer(index);
+                optionsElement.appendChild(button);
+            });
+
+            progressElement.textContent = `Pergunta ${currentQuestion + 1} de ${questions.length}`;
+        }
+
+        function checkAnswer(selectedIndex) {
+            const correctIndex = questions[currentQuestion].correct;
+
+            if (selectedIndex === correctIndex) {
+                score++;
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            quizElement.style.display = 'none';
+            resultElement.style.display = 'block';
+
+            const percentage = Math.round((score / questions.length) * 100);
+            let message = '';
+
+            if (percentage >= 80) {
+                message = `Você acertou ${score} de ${questions.length}! Você me conhece perfeitamente! Sempre gabaritando né?❤️`;
+            } else if (percentage >= 50) {
+                message = `Você acertou ${score} de ${questions.length}! Uh! Quase! Mandou bem, chuchu 😊`;
+            } else {
+                message = `Você acertou ${score} de ${questions.length}! Ainda te amo meu peixinho! 💕🐟`;
+            }
+
+            resultElement.innerHTML = `
+                <p>${message}</p>
+                <div class="heart">❤️</div>
+                <p>E se quer uma resposta, estamos há:</p>
+                <p>${tempoJuntos.anos} anos, ${tempoJuntos.meses} meses, ${tempoJuntos.dias} dias, ${tempoJuntos.horas} horas e ${tempoJuntos.minutos} minutos juntos!</p>
+                <a href="apresentacao.html">Clique aqui para continuar a surpresa!</a>
+            `;
+        }
+
+        function calcularTempo(dataInicial) {
+            const agora = new Date();
+            const diferenca = agora - dataInicial; // em milissegundos
+
+            // Cálculos
+            const segundos = Math.floor(diferenca / 1000);
+            const minutos = Math.floor(segundos / 60);
+            const horas = Math.floor(minutos / 60);
+            const dias = Math.floor(horas / 24);
+            const meses = Math.floor(dias / 30.44); // Média aproximada
+            const anos = Math.floor(meses / 12);
+
+            // Tempo restante após calcular os anos/meses/dias
+            const mesesRestantes = meses % 12;
+            const diasRestantes = Math.floor(dias % 30.44);
+            const horasRestantes = horas % 24;
+            const minutosRestantes = minutos % 60;
+
+            return {
+                anos,
+                meses: mesesRestantes,
+                dias: diasRestantes,
+                horas: horasRestantes,
+                minutos: minutosRestantes
+            };
+        }
+
+        const dataDoEvento = new Date('2023-04-22');
+        const tempoJuntos = calcularTempo(dataDoEvento);
+
+        // Iniciar o quiz
+        showQuestion();
+    </script>
+</body>
+
+</html>
