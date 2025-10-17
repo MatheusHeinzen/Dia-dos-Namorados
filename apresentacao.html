@@ -53,6 +53,8 @@
 
   .one {
     font-size: 4.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    color: #e91e63;
   }
 
   .one>img {
@@ -315,8 +317,8 @@
 </style>
 
 <body>
-  <button id="play-music-btn" style="position:fixed;top:10px;right:10px;z-index:9999;">
-    Clique para ativar a música
+  <button id="play-music-btn" style="position:fixed;top:20px;right:20px;z-index:9999;background:rgba(255,255,255,0.9);border:none;border-radius:25px;padding:15px 25px;cursor:pointer;font-weight:600;box-shadow:0 4px 15px rgba(0,0,0,0.2);transition:all 0.3s ease;">
+    🎵 Clique para ativar a música
   </button>
   <div class="container">
     <div class="one">
@@ -445,10 +447,25 @@
 <script>
   const audio = document.getElementById('bg-music');
   const btn = document.getElementById('play-music-btn');
+  
+  // Adicionar efeito hover ao botão
+  btn.addEventListener('mouseenter', function() {
+    this.style.transform = 'translateY(-2px)';
+    this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';
+  });
+  
+  btn.addEventListener('mouseleave', function() {
+    this.style.transform = 'translateY(0)';
+    this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+  });
+  
   btn.addEventListener('click', function () {
     audio.volume = 0.1;
     audio.play();
-    btn.style.display = 'none';
+    this.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      this.style.display = 'none';
+    }, 200);
   });
 </script>
 <script>

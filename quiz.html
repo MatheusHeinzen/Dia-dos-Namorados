@@ -7,92 +7,376 @@
     <title>Quiz do Amor</title>
     <link rel="shortcut icon" type="image/png" href="./img/heart.svg" />
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #ffebee;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff6b9d, #c44569, #f8b500);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
             padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .quiz-container {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 600px;
             width: 100%;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quiz-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         h1 {
             color: #e91e63;
             margin-bottom: 30px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .question {
-            margin-bottom: 20px;
-            font-size: 18px;
-            font-weight: bold;
+            margin-bottom: 30px;
+            font-size: 1.3rem;
+            font-weight: 600;
             color: #333;
+            line-height: 1.5;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 30px;
         }
 
         .option {
-            background-color: #f8bbd0;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
             border: none;
-            border-radius: 25px;
-            padding: 12px;
-            font-size: 16px;
+            border-radius: 30px;
+            padding: 18px 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: optionSlide 0.6s ease-out;
+        }
+
+        @keyframes optionSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
         }
 
         .option:hover {
-            background-color: #e91e63;
+            background: linear-gradient(135deg, #e91e63, #ff6b9d);
             color: white;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.3);
         }
 
-        .progress {
-            margin-top: 20px;
+        .option:hover::before {
+            left: 100%;
+        }
+
+        .option:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .option.correct {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            animation: correctPulse 0.6s ease-out;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .option.incorrect {
+            background: linear-gradient(135deg, #f44336, #ef5350);
+            color: white;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .progress-container {
+            margin: 30px 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e91e63, #ff6b9d);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
             font-style: italic;
             color: #e91e63;
+            font-weight: 500;
+            font-size: 1rem;
         }
 
         .result {
             display: none;
             margin-top: 30px;
-            font-size: 20px;
+            font-size: 1.3rem;
             color: #e91e63;
-            font-weight: bold;
+            font-weight: 600;
+            animation: resultSlide 0.8s ease-out;
+        }
+
+        @keyframes resultSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .heart {
-            font-size: 50px;
-            margin-top: 20px;
-            animation: pulse 1.5s infinite;
+            font-size: 4rem;
+            margin: 20px 0;
+            animation: heartBeat 1.5s infinite;
+            display: inline-block;
         }
 
-        @keyframes pulse {
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1.1); }
+            75% { transform: scale(1.15); }
+        }
+
+        .continue-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #e91e63, #ff6b9d);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4);
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .floating-heart {
+            position: absolute;
+            color: #ff6b9d;
+            font-size: 2rem;
+            animation: floatUp 3s ease-out infinite;
+            opacity: 0.9;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
             0% {
-                transform: scale(1);
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                opacity: 0;
             }
-
-            50% {
-                transform: scale(1.3);
+            15% {
+                opacity: 0.9;
+                transform: translateY(80vh) rotate(45deg) scale(1);
             }
-
+            85% {
+                opacity: 0.9;
+                transform: translateY(20vh) rotate(315deg) scale(1.2);
+            }
             100% {
-                transform: scale(1);
+                transform: translateY(-50px) rotate(360deg) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff6b9d;
+            animation: confettiFall 3s linear infinite;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .quiz-container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .question {
+                font-size: 1.1rem;
+            }
+            
+            .option {
+                padding: 15px 20px;
+                font-size: 1rem;
             }
         }
     </style>
@@ -104,10 +388,28 @@
         <div id="quiz">
             <div class="question" id="question"></div>
             <div class="options" id="options"></div>
-            <div class="progress" id="progress"></div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress"></div>
+            </div>
         </div>
         <div class="result" id="result"></div>
     </div>
+    
+    <div class="floating-hearts" id="floating-hearts"></div>
+    <div class="confetti" id="confetti"></div>
+
+    <!-- Controles de áudio -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 1001;">
+        <button id="audio-toggle" style="background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-size: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">🔊</button>
+    </div>
+
+    <!-- Áudio de fundo -->
+    <audio id="background-music" loop>
+        <source src="./audio/Alianca.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const questions = [
@@ -139,31 +441,60 @@
                 correct: 0
             },
             {
-                question: "Qual é a minha música favorita atualmente?",
+                question: "Qual é a minha banda favorita atualmente?",
                 options: [
-                    "Mun Rá",
-                    "Caso Indefinido",
-                    "Aliança"
+                    "Huntrix",
+                    "Twenty One Pilots",
+                    "AnaVitoria"
                 ],
                 correct: 1
             },
             {
-                question: "Que peça de roupa não podia ser grande para a gente ficar juntos segundo o Dozinete?",
+                question: "O que meu pai me mataria se eu usasse?",
                 options: [
                     "Brinco",
                     "Boné",
                     "Calça"
                 ],
-                correct: 2
+                correct: 0
             },
             {
-                question: "A Quanto tempo foi o nosso primeiro beijo?",
+                question: "A Quanto tempo estamos namorando?",
                 options: [
                     "{{tempoJuntos.anos}} anos, {{tempoJuntos.meses}} meses e {{tempoJuntos.dias}} dias",
                     "{{tempoDoPrimeiroBeijo.anos}} anos, {{tempoDoPrimeiroBeijo.meses}} meses e {{tempoDoPrimeiroBeijo.dias}} dias",
                     "{{tempoDoPrimeiroEncontro.anos}} anos, {{tempoDoPrimeiroEncontro.meses}} meses e {{tempoDoPrimeiroEncontro.dias}} dias"
                 ],
                 correct: 1
+            },
+            {
+                question: "Qual minha Huntrix favorita?",
+                options: [
+                    "Rumi",
+                    "Mira",
+                    "Zoey"
+                ],
+                correct: 2
+            },
+            {
+                question: "O que eu mais gosto de fazer com você?",
+                options: [
+                    "Dar beijinhos",
+                    "Ficar abraçadinho",
+                    "Ver filminho",
+                    "Comer",
+                    "Todas as opções"
+                ],
+                correct: 4
+            },
+            {
+                question: "Quantos graus estavam no dia que a gente se conheceu?",
+                options: [
+                    "15 graus",
+                    "20 graus",
+                    "Sei lá louco, me beija"
+                ],
+                correct: 2
             }
         ];
 
@@ -174,6 +505,7 @@
         const questionElement = document.getElementById('question');
         const optionsElement = document.getElementById('options');
         const progressElement = document.getElementById('progress');
+        const progressFillElement = document.getElementById('progress-fill');
 
         function showQuestion() {
             const question = questions[currentQuestion];
@@ -201,23 +533,58 @@
                 optionsElement.appendChild(button);
             });
 
+            // Atualizar barra de progresso
+            const progressPercentage = ((currentQuestion + 1) / questions.length) * 100;
+            progressFillElement.style.width = `${progressPercentage}%`;
             progressElement.textContent = `Pergunta ${currentQuestion + 1} de ${questions.length}`;
         }
 
         function checkAnswer(selectedIndex) {
             const correctIndex = questions[currentQuestion].correct;
+            const buttons = document.querySelectorAll('.option');
+            
+            // Desabilitar todos os botões
+            buttons.forEach(btn => btn.disabled = true);
+            
+            // Mostrar feedback visual
+            buttons.forEach((button, index) => {
+                if (index === correctIndex) {
+                    button.classList.add('correct');
+                } else if (index === selectedIndex && selectedIndex !== correctIndex) {
+                    button.classList.add('incorrect');
+                }
+            });
+
+            // Adicionar efeito sonoro visual (vibração se suportada)
+            if (selectedIndex === correctIndex) {
+                if (navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100]);
+                }
+                playCorrectSound();
+                createFloatingHearts();
+                // Criar mais corações com delay para efeito em cascata
+                setTimeout(() => createFloatingHearts(), 500);
+                setTimeout(() => createFloatingHearts(), 1000);
+            } else {
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200]);
+                }
+                playIncorrectSound();
+            }
 
             if (selectedIndex === correctIndex) {
                 score++;
             }
 
-            currentQuestion++;
-
-            if (currentQuestion < questions.length) {
-                showQuestion();
-            } else {
-                showResult();
-            }
+            // Aguardar um pouco antes de continuar
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1500);
         }
 
         function showResult() {
@@ -226,20 +593,67 @@
 
             const percentage = Math.round((score / questions.length) * 100);
             let message = '';
+            let emoji = '';
 
             if (percentage == 100) {
                 message = `Você acertou ${score} de ${questions.length}! Você me conhece perfeitamente! Sempre gabaritando né?❤️`;
+                emoji = '🏆';
+                createConfetti();
+                createFloatingHearts();
+                playWinSound();
             } else if (percentage >= 50) {
                 message = `Você acertou ${score} de ${questions.length}! Uh! Quase! Mandou bem, chuchu 😊`;
+                emoji = '😊';
+                createFloatingHearts();
             } else {
                 message = `Você acertou ${score} de ${questions.length}! Ainda te amo meu peixinho! 💕🐟`;
+                emoji = '🐟';
             }
 
             resultElement.innerHTML = `
                 <p>${message}</p>
-                <div class="heart">❤️</div>
-                <a href="apresentacao.html">Clique aqui para continuar a surpresa!</a>
+                <div class="heart">${emoji}</div>
+                <a href="apresentacao.html" class="continue-btn">Clique aqui para continuar a surpresa! ✨</a>
             `;
+        }
+
+        function createFloatingHearts() {
+            const heartsContainer = document.getElementById('floating-hearts');
+            const heartEmojis = ['❤️', '💖', '💕', '💗', '💝', '💘', '💞', '💓'];
+            
+            // Criar múltiplos corações
+            for (let i = 0; i < 8; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                heart.style.fontSize = (Math.random() * 1 + 1.5) + 'rem'; // Tamanhos variados
+                heartsContainer.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 4000);
+            }
+        }
+
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confetti');
+            const colors = ['#ff6b9d', '#e91e63', '#ff9a9e', '#fecfef', '#c44569'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                confettiContainer.appendChild(confetti);
+
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
         }
 
         function calcularTempo(dataInicial) {
@@ -272,6 +686,61 @@
         const tempoJuntos = calcularTempo(new Date('2023-04-22'));
         const tempoDoPrimeiroBeijo = calcularTempo(new Date('2023-03-25'));
         const tempoDoPrimeiroEncontro = calcularTempo(new Date('2023-03-11'));
+
+        // Controle de áudio
+        const audioToggle = document.getElementById('audio-toggle');
+        const backgroundMusic = document.getElementById('background-music');
+        let isAudioEnabled = false;
+
+        audioToggle.addEventListener('click', () => {
+            if (isAudioEnabled) {
+                backgroundMusic.pause();
+                audioToggle.textContent = '🔇';
+                isAudioEnabled = false;
+            } else {
+                backgroundMusic.play().catch(e => console.log('Erro ao reproduzir áudio:', e));
+                audioToggle.textContent = '🔊';
+                isAudioEnabled = true;
+            }
+        });
+
+        // Efeitos sonoros usando Web Audio API
+        function playSound(frequency, duration, type = 'sine') {
+            if (!isAudioEnabled) return;
+            
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function playCorrectSound() {
+            playSound(523.25, 0.2); // C5
+            setTimeout(() => playSound(659.25, 0.2), 100); // E5
+            setTimeout(() => playSound(783.99, 0.3), 200); // G5
+        }
+
+        function playIncorrectSound() {
+            playSound(200, 0.5, 'sawtooth');
+        }
+
+        function playWinSound() {
+            const notes = [523.25, 587.33, 659.25, 698.46, 783.99]; // C5, D5, E5, F5, G5
+            notes.forEach((note, index) => {
+                setTimeout(() => playSound(note, 0.3), index * 150);
+            });
+        }
 
         // Iniciar o quiz
         showQuestion();
